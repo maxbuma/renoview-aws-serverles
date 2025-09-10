@@ -48,7 +48,7 @@ A serverless web application for construction site photo management built using 
 Website URL: [(http://renoview-app-storage.s3-website-us-east-1.amazonaws.com/)]
 
 ## Screenshots
-![Renoview Architecture](Static-website.jpg)
+![Renoview Architecture](Webpage.jpg)
 ![Renoview Architecture](LambdaFunction.jpg)
 ![Renoview Architecture](API%20Gateway.jpg)
 ![Renoview Architecture](S3.jpg)
