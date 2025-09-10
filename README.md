@@ -1,160 +1,57 @@
 # RenovieW AWS Serverless Application
 
-A serverless web application for construction site photo management built with AWS services.
-
-## Architecture Overview
-
-![Architecture Diagram](./images/architecture.png)
-
-This application uses several AWS services:
+## Project Overview
+A serverless web application for construction site photo management built using AWS services. This project demonstrates the implementation of cloud architecture using:
 - S3 for static website hosting and image storage
-- Lambda for serverless backend logic
-- API Gateway for RESTful API endpoints
+- Lambda for serverless backend processing
+- API Gateway for RESTful endpoints
 
 ## Features
-
-- Static website hosting
-- Secure image upload
+- Static website hosting on S3
+- Secure image upload functionality
 - Image gallery with preview
-- Serverless backend
-- RESTful API endpoints
+- Secure API endpoints
+- Serverless architecture
 
-## Technical Implementation
+## AWS Architecture
+This project uses the following AWS services:
 
-### AWS Services Used
+### S3 Buckets:
+- `renoview-app-storage`: Hosts the static website
+- `renoview-images`: Stores uploaded images
 
-1. **S3 Buckets**
-   - Static website hosting
-   - Image storage
-   - Public/private access configuration
+### Lambda Functions:
+- Image processing and API handling
+- CORS support
+- Secure file uploads
 
-2. **Lambda Functions**
-   - Image processing
-   - API handling
-   - CORS support
+### API Gateway Endpoints:
+- GET /projects
+- GET /images
+- GET /getUploadUrl
 
-3. **API Gateway**
-   - RESTful endpoints
-   - CORS configuration
-   - Lambda integration
+## Implementation Details
 
-### Frontend Implementation
-
+### Frontend
 - HTML5/CSS3/JavaScript
-- Async/await patterns
-- Fetch API
-- File upload handling
-- Image preview functionality
+- Drag-and-drop image upload
+- Real-time image preview
+- Responsive design
 
-## Code Examples
+### Backend
+- Serverless architecture
+- RESTful API design
+- Secure file handling
+- CORS configuration
 
-### Lambda Function
-```javascript
-import { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+## Live Demo
+Website URL: [(http://renoview-app-storage.s3-website-us-east-1.amazonaws.com/)]
 
-const s3Client = new S3Client({ region: 'us-east-1' }); // Make sure this matches your region
-const BUCKET_NAME = 'renoview-images'; // Your bucket name
+## Screenshots
+[Screenshots to be added]
 
-export const handler = async (event) => {
-    console.log('Event:', JSON.stringify(event, null, 2));
-    
-    const headers = {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-        "Content-Type": "application/json"
-    };
+## Setup Instructions
+Detailed setup instructions can be found in [docs/setup-guide.md](docs/setup-guide.md)
 
-    try {
-        // Handle OPTIONS requests
-        if (event.httpMethod === 'OPTIONS') {
-            return {
-                statusCode: 200,
-                headers: headers,
-                body: JSON.stringify({ message: 'CORS enabled' })
-            };
-        }
-
-        // Handle different endpoints
-        switch (event.path) {
-            case '/projects':
-                return {
-                    statusCode: 200,
-                    headers: headers,
-                    body: JSON.stringify({
-                        message: "Hello from Lambda!",
-                        timestamp: new Date().toISOString()
-                    })
-                };
-
-            case '/getUploadUrl':
-                const imageKey = `images/${Date.now()}.jpg`;
-                const putCommand = new PutObjectCommand({
-                    Bucket: BUCKET_NAME,
-                    Key: imageKey,
-                    ContentType: 'image/*'
-                });
-                
-                const uploadUrl = await getSignedUrl(s3Client, putCommand, { expiresIn: 300 });
-                
-                return {
-                    statusCode: 200,
-                    headers: headers,
-                    body: JSON.stringify({
-                        uploadUrl,
-                        imageKey
-                    })
-                };
-
-            case '/images':
-                // List all images in the bucket
-                const listCommand = new ListObjectsV2Command({
-                    Bucket: BUCKET_NAME,
-                    Prefix: 'images/'
-                });
-                
-                const listResponse = await s3Client.send(listCommand);
-                
-                // Generate signed URLs for each image
-                const images = await Promise.all((listResponse.Contents || []).map(async (item) => {
-                    const getCommand = new GetObjectCommand({
-                        Bucket: BUCKET_NAME,
-                        Key: item.Key
-                    });
-                    const url = await getSignedUrl(s3Client, getCommand, { expiresIn: 3600 });
-                    return {
-                        url,
-                        timestamp: item.LastModified,
-                        key: item.Key
-                    };
-                }));
-
-                return {
-                    statusCode: 200,
-                    headers: headers,
-                    body: JSON.stringify(images)
-                };
-
-            default:
-                return {
-                    statusCode: 404,
-                    headers: headers,
-                    body: JSON.stringify({
-                        message: "Route not found",
-                        path: event.path
-                    })
-                };
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        return {
-            statusCode: 500,
-            headers: headers,
-            body: JSON.stringify({ 
-                message: "Error in Lambda",
-                error: error.message 
-            })
-        };
-    }
-};
+## Author
+Max Buma
