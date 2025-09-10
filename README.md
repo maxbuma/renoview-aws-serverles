@@ -14,7 +14,7 @@ A serverless web application for construction site photo management built using 
 - Serverless architecture
 
 ## AWS Architecture
-This project uses the following AWS services:
+![Architecture Diagram](Renoview Architecture.drawio)
 
 ### S3 Buckets:
 - `renoview-app-storage`: Hosts the static website
