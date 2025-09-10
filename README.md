@@ -1,4 +1,4 @@
-# RenovieW AWS Serverless Application
+# Renoview AWS Serverless Application
 
 ## Project Overview
 A serverless web application for construction site photo management built using AWS services. This project demonstrates the implementation of cloud architecture using:
